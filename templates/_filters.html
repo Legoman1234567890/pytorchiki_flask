@@ -1,5 +1,5 @@
 <details class="filters-toggle" {% if request.args %}open{% endif %}>
-    <summary>🔍 Показать фильтры</summary>
+    <summary>Показать фильтры</summary>
 
     <form method="get" class="filters-form" action="{{ form_action|default(request.path) }}">
 
@@ -103,7 +103,7 @@
 
         <div class="filter-actions">
             <button type="submit" class="btn btn-primary">Применить</button>
-            <a href="{{ request.path }}" class="btn btn-secondary">♻️ Сбросить</a>
+            <a href="{{ request.path }}" class="btn btn-secondary">Сбросить</a>
         </div>
     </form>
 </details>
