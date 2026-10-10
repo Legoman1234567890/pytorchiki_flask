@@ -16,23 +16,23 @@
 <header class="topbar">
     <div class="topbar-inner">
         <a href="{{ url_for('index') }}{% if preserve_qs %}?{{ preserve_qs }}{% endif %}"
-           class="logo">🏙 Витрина новостроек</a>
+           class="logo">Витрина новостроек</a>
 
         <nav class="nav">
             <a href="{{ url_for('index') }}{% if preserve_qs %}?{{ preserve_qs }}{% endif %}"
-               class="nav-link {% if active_page == 'index' %}active{% endif %}">🏠 Карточки</a>
+               class="nav-link {% if active_page == 'index' %}active{% endif %}">Карточки</a>
 
             <a href="{{ url_for('map_view') }}{% if preserve_qs %}?{{ preserve_qs }}{% endif %}"
-               class="nav-link {% if active_page == 'map' %}active{% endif %}">🗺 Карта</a>
+               class="nav-link {% if active_page == 'map' %}active{% endif %}">Карта</a>
 
             <a href="{{ url_for('favorites_view') }}"
                class="nav-link {% if active_page == 'favorites' %}active{% endif %}">
-                ❤ Избранное
+                Избранное
                 <span id="fav-count" class="badge">{{ session.get('favorites', [])|length }}</span>
             </a>
 
             <a href="{{ url_for('analytics') }}{% if preserve_qs %}?{{ preserve_qs }}{% endif %}"
-               class="nav-link {% if active_page == 'analytics' %}active{% endif %}">📊 Аналитика</a>
+               class="nav-link {% if active_page == 'analytics' %}active{% endif %}">Аналитика</a>
         </nav>
     </div>
 </header>
