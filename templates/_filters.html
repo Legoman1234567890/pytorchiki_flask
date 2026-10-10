@@ -5,7 +5,8 @@
 
         <div class="filter-group">
             <label>Город</label>
-            <select name="city" multiple size="4">
+            <select name="city" multiple class="js-searchable"
+                    data-placeholder="Начните вводить название города…">
                 {% for c in options.cities %}
                     <option value="{{ c }}"
                         {% if c in current_args.getlist('city') %}selected{% endif %}>{{ c }}</option>
@@ -15,7 +16,7 @@
 
         <div class="filter-group">
             <label>Источник данных</label>
-            <select name="source" multiple size="3">
+            <select name="source" multiple>
                 {% for s in options.sources %}
                     <option value="{{ s }}"
                         {% if s in current_args.getlist('source') %}selected{% endif %}>{{ s }}</option>
@@ -25,7 +26,8 @@
 
         <div class="filter-group">
             <label>Застройщик</label>
-            <select name="developer" multiple size="4">
+            <select name="developer" multiple class="js-searchable"
+                    data-placeholder="Начните вводить имя застройщика…">
                 {% for d in options.developers %}
                     <option value="{{ d }}"
                         {% if d in current_args.getlist('developer') %}selected{% endif %}>{{ d }}</option>
@@ -35,7 +37,7 @@
 
         <div class="filter-group">
             <label>Класс ЖК</label>
-            <select name="complex_class" multiple size="4">
+            <select name="complex_class" multiple>
                 {% for cl in options.classes %}
                     <option value="{{ cl }}"
                         {% if cl in current_args.getlist('complex_class') %}selected{% endif %}>{{ cl }}</option>
@@ -45,7 +47,8 @@
 
         <div class="filter-group">
             <label>Комнат</label>
-            <select name="rooms" multiple size="4">
+            <select name="rooms" multiple class="js-searchable"
+                    data-placeholder="Выберите количество комнат…">
                 {% for r in options.rooms %}
                     <option value="{{ r }}"
                         {% if r|string in current_args.getlist('rooms') %}selected{% endif %}>{{ r }}</option>
