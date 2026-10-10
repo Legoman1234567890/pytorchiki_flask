@@ -1,0 +1,117 @@
+/* ============ Карточка ЖК ============ */
+.zhk-card {
+    border: 1px solid #e6e6e6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    animation: zhkFadeIn 0.35s ease-out both;
+}
+
+@keyframes zhkFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.zhk-card-link {
+    text-decoration: none !important;
+    color: inherit !important;
+    display: block;
+}
+
+.zhk-card-link:hover .zhk-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #cfd8ff;
+    cursor: pointer;
+}
+
+.zhk-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #1a1a1a;
+}
+
+.zhk-sub {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.zhk-price {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0d7a3f;
+    margin: 10px 0;
+}
+
+.zhk-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin: 2px 6px 2px 0;
+    background: #eef3ff;
+    color: #2b4d9b;
+}
+
+.zhk-badge-green {
+    background: #e7f6ec;
+    color: #0d7a3f;
+}
+
+.zhk-badge-warn {
+    background: #fff4e5;
+    color: #b05a00;
+}
+
+/* ============ Плашка "Фильтры применены" ============ */
+.filters-applied {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    margin: 8px 0 16px 0;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #e7f6ec 0%, #eef3ff 100%);
+    border-left: 4px solid #0d7a3f;
+    color: #1a1a1a;
+    font-size: 15px;
+    animation: appliedPulse 1.2s ease-out;
+}
+
+.filters-applied b { color: #0d7a3f; }
+
+@keyframes appliedPulse {
+    0%   { background-color: #c7f0d5; transform: scale(1.01); }
+    100% { background-color: transparent; transform: scale(1); }
+}
+
+/* ============ Плашка "Фильтры сброшены" ============ */
+.filters-reset {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    margin: 8px 0 16px 0;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #fff4e5 0%, #ffe9d6 100%);
+    border-left: 4px solid #b05a00;
+    color: #1a1a1a;
+    font-size: 15px;
+    animation: appliedPulse 1.2s ease-out;
+}
+
+/* ============ Мобильные правки ============ */
+/* Скрываем встроенную стрелку sidebar — фильтры живут в expander */
+@media (max-width: 768px) {
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
+    section[data-testid="stSidebar"] {
+        display: none !important;
+    }
+}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Аналитика{% endblock %}
+
+{% block content %}
+
+{% include "_filters.html" %}
+
+<h2 class="page-title">Аналитика</h2>
+
+{% if empty %}
+    <div class="empty">Нет данных для аналитики под текущие фильтры.</div>
+{% else %}
+
+    {% if charts.price_hist %}
+        <section class="chart-block">
+            <h3>Распределение цен, млн ₽</h3>
+            {{ charts.price_hist|safe }}
+        </section>
+    {% endif %}
+
+    {% if charts.price_by_class %}
+        <section class="chart-block">
+            <h3>Цена за м² по классу</h3>
+            {{ charts.price_by_class|safe }}
+        </section>
+    {% endif %}
+
+    {% if charts.price_by_city %}
+        <section class="chart-block">
+            <h3>Средняя цена за м² по городам</h3>
+            {{ charts.price_by_city|safe }}
+        </section>
+    {% endif %}
+
+    {% if charts.top_developers %}
+        <section class="chart-block">
+            <h3>Топ застройщиков по числу ЖК</h3>
+            {{ charts.top_developers|safe }}
+        </section>
+    {% endif %}
+
+    {% if charts.by_year %}
+        <section class="chart-block">
+            <h3>Распределение по годам сдачи</h3>
+            {{ charts.by_year|safe }}
+        </section>
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}

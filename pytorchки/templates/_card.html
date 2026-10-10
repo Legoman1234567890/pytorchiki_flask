@@ -1,0 +1,28 @@
+<div class="card-wrap">
+    <a href="{{ url_for('detail', zhk_id=card.id) }}" class="card-link">
+        <div class="zhk-card">
+            <div class="zhk-title">{{ card.zhk_name }}</div>
+            <div class="zhk-sub">
+                {{ card.developer or '—' }}
+                · {{ card.city or '' }} {{ card.district or '' }}
+            </div>
+            <div class="zhk-badges">
+                <span class="badge badge-blue">{{ card.complex_class or 'класс не указан' }}</span>
+                <span class="badge badge-blue">{{ card.rooms or '—' }} комн</span>
+                <span class="badge badge-blue">{{ card.total_area or '—' }} м²</span>
+                <span class="badge badge-blue">этаж {{ card.floor or '—' }} из {{ card.total_floors or '—' }}</span>
+                <span class="badge badge-green">{{ card.metro }}</span>
+            </div>
+            <div class="zhk-price">{{ card.price }}</div>
+            <div class="zhk-sub">
+                Сдача: {{ card.completion_year or '—' }} ·
+                Статус: {{ card.status or '—' }} ·
+                Источник: {{ card.source or '—' }}
+            </div>
+        </div>
+    </a>
+    <button class="fav-btn {% if card.id in favorites %}fav-active{% endif %}"
+            data-id="{{ card.id }}">
+        {% if card.id in favorites %}💔 Убрать{% else %}❤ В избранное{% endif %}
+    </button>
+</div>

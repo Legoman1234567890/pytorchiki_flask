@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Карта новостроек{% endblock %}
+
+{% block content %}
+
+{% include "_filters.html" %}
+
+<h2 class="page-title">Карта новостроек</h2>
+<p class="hint">💡 Кликни по маркеру — всплывёт попап с информацией и ссылкой на карточку</p>
+
+<div class="map-wrap">
+    {{ map_html|safe }}
+</div>
+
+{% endblock %}
