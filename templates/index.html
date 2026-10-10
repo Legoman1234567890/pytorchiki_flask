@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Витрина новостроек · Карточки{% endblock %}
+
+{% block content %}
+
+{% include "_filters.html" %}
+
+<h2 class="page-title">Найдено: <b>{{ total }}</b> из {{ total_all }} ЖК</h2>
+<p class="hint">💡 Кликни по карточке, чтобы открыть подробную информацию</p>
+
+{% if cards|length == 0 %}
+    <div class="empty">Нет объектов под текущие фильтры. Попробуй сбросить фильтры.</div>
+{% else %}
+
+    <div class="cards-list">
+        {% for card in cards %}
+            {% include "_card.html" %}
+        {% endfor %}
+    </div>
+
+    <nav class="pagination">
+        {% set qs = current_args.to_dict(flat=False) %}
+        {% set _ = qs.pop('page', None) %}
+        {% set base_qs = qs %}
+
+        {% if page > 1 %}
+            <a class="page-btn"
+               href="{{ url_for('index', page=page-1, **base_qs) }}">← Предыдущая</a>
+        {% else %}
+            <span class="page-btn disabled">← Предыдущая</span>
+        {% endif %}
+
+        <span class="page-info">Страница <b>{{ page }}</b> из <b>{{ total_pages }}</b></span>
+
+        {% if page < total_pages %}
+            <a class="page-btn"
+               href="{{ url_for('index', page=page+1, **base_qs) }}">Следующая →</a>
+        {% else %}
+            <span class="page-btn disabled">Следующая →</span>
+        {% endif %}
+    </nav>
+
+{% endif %}
+
+{% endblock %}

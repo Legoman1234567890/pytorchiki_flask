@@ -1,0 +1,106 @@
+<details class="filters-toggle" {% if request.args %}open{% endif %}>
+    <summary>🔍 Показать фильтры</summary>
+
+    <form method="get" class="filters-form" action="{{ form_action|default(request.path) }}">
+
+        <div class="filter-group">
+            <label>Город</label>
+            <select name="city" multiple size="4">
+                {% for c in options.cities %}
+                    <option value="{{ c }}"
+                        {% if c in current_args.getlist('city') %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>Источник данных</label>
+            <select name="source" multiple size="3">
+                {% for s in options.sources %}
+                    <option value="{{ s }}"
+                        {% if s in current_args.getlist('source') %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>Застройщик</label>
+            <select name="developer" multiple size="4">
+                {% for d in options.developers %}
+                    <option value="{{ d }}"
+                        {% if d in current_args.getlist('developer') %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>Класс ЖК</label>
+            <select name="complex_class" multiple size="4">
+                {% for cl in options.classes %}
+                    <option value="{{ cl }}"
+                        {% if cl in current_args.getlist('complex_class') %}selected{% endif %}>{{ cl }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>Комнат</label>
+            <select name="rooms" multiple size="4">
+                {% for r in options.rooms %}
+                    <option value="{{ r }}"
+                        {% if r|string in current_args.getlist('rooms') %}selected{% endif %}>{{ r }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>Цена, млн ₽</label>
+            <div class="range">
+                <input type="number" name="price_from" placeholder="от" step="0.5" min="0"
+                       value="{{ current_args.get('price_from', '') }}">
+                <input type="number" name="price_to" placeholder="до" step="0.5" min="0"
+                       value="{{ current_args.get('price_to', '') }}">
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label>Этаж</label>
+            <div class="range">
+                <input type="number" name="floor_from" placeholder="от" step="1" min="0"
+                       value="{{ current_args.get('floor_from', '') }}">
+                <input type="number" name="floor_to" placeholder="до" step="1" min="0"
+                       value="{{ current_args.get('floor_to', '') }}">
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label>До метро, мин</label>
+            <div class="range">
+                <input type="number" name="metro_from" placeholder="от" step="1" min="0"
+                       value="{{ current_args.get('metro_from', '') }}">
+                <input type="number" name="metro_to" placeholder="до" step="1" min="0"
+                       value="{{ current_args.get('metro_to', '') }}">
+            </div>
+            <small class="hint">⚠️ При сужении диапазона объекты без метро скрываются</small>
+        </div>
+
+        <div class="filter-group">
+            <label>Площадь от, м²</label>
+            <input type="number" name="area_from" step="1" min="0"
+                   value="{{ current_args.get('area_from', '') }}">
+        </div>
+
+        <div class="filter-group checkbox">
+            <label>
+                <input type="checkbox" name="mortgage" value="1"
+                    {% if current_args.get('mortgage') == '1' %}checked{% endif %}>
+                Только со льготной ипотекой
+            </label>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">Применить</button>
+            <a href="{{ request.path }}" class="btn btn-secondary">♻️ Сбросить</a>
+        </div>
+    </form>
+</details>

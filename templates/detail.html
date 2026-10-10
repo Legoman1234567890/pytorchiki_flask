@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ row.zhk_name if row else 'ЖК не найден' }}{% endblock %}
+
+{% block content %}
+
+{% if not row %}
+    <div class="empty">ЖК не найден.</div>
+{% else %}
+
+<a href="{{ url_for('index') }}" class="btn btn-secondary back-btn">← Вернуться к списку</a>
+
+<h2 class="page-title">{{ row.zhk_name }}</h2>
+
+<div class="detail-wrap">
+    <div class="detail-main">
+        <div class="zhk-price">{{ row.price }}</div>
+        <div class="zhk-badges">
+            <span class="badge badge-green">{{ row.metro }}</span>
+        </div>
+
+        <h3>Характеристики</h3>
+        <div class="fields-grid">
+            {% for label, val in fields %}
+                <div class="field">
+                    <div class="field-label">{{ label }}</div>
+                    <div class="field-value">{{ val if val is not none and val == val else '—' }}</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if row.url %}
+            <p class="detail-url">
+                🔗 <a href="{{ row.url }}" target="_blank" rel="noopener">
+                    Открыть на {{ row.source or 'сайте' }}
+                </a>
+            </p>
+        {% endif %}
+    </div>
+
+    <div class="detail-side">
+        <button class="fav-btn fav-btn-large {% if row.is_fav %}fav-active{% endif %}"
+                data-id="{{ row.id }}">
+            {% if row.is_fav %}💔 Убрать из избранного{% else %}❤ В избранное{% endif %}
+        </button>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %}
