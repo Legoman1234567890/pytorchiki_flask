@@ -417,7 +417,63 @@ a { color: inherit; }
 
     .detail-wrap { grid-template-columns: 1fr; }
     .detail-side { position: static; }
+/* ============ Choices.js — адаптация под тему ============ */
+.choices {
+    width: 100%;
+    margin-bottom: 0;
+}
 
+.choices__inner {
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 4px 6px;
+    min-height: 38px;
+}
+
+.choices.is-focused .choices__inner {
+    border-color: #2b4d9b;
+    box-shadow: 0 0 0 2px rgba(43, 77, 155, 0.12);
+}
+
+.choices__list--multiple .choices__item {
+    background: #eef3ff;
+    color: #2b4d9b;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    padding: 3px 8px;
+    margin: 2px;
+}
+
+.choices__list--multiple .choices__item.is-highlighted {
+    background: #dce6ff;
+}
+
+.choices__button {
+    border-left: 1px solid rgba(43, 77, 155, 0.3);
+    margin-left: 6px;
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+    border-radius: 8px;
+    border: 1px solid #e6e6e6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+}
+
+.choices__input {
+    background: transparent;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.choices__placeholder {
+    color: #999;
+    opacity: 1;
+}
     .filters-form { grid-template-columns: 1fr; }
     .fav-btn { position: static; display: block; margin-top: 10px; }
     .card-wrap { position: static; }
