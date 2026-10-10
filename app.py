@@ -1,4 +1,6 @@
 import math
+from urllib.parse import urlencode
+
 import folium
 import pandas as pd
 import numpy as np
@@ -44,6 +46,18 @@ COLORS_BY_CLASS = {
 # ---------- Кэш HTML-содержимого карты ----------
 # Заполняется при заходе на /map, отдаётся через /map-frame.
 _map_cache = {"html": None}
+
+
+# ======================== CONTEXT PROCESSOR ========================
+# Добавляет переменную preserve_qs во все шаблоны — это query-строка
+# текущих фильтров без параметра 'page'. Используется в base.html,
+# чтобы фильтры «переезжали» между вкладками.
+
+@app.context_processor
+def inject_preserve_qs():
+    args = request.args.to_dict(flat=False)
+    args.pop("page", None)
+    return {"preserve_qs": urlencode(args, doseq=True)}
 
 
 # ======================== ВСПОМОГАТЕЛЬНЫЕ ========================
@@ -113,6 +127,7 @@ def apply_filters(df_in, args):
     if "total_area" in f.columns and area_from > 0:
         f = f[(f["total_area"] >= area_from) | f["total_area"].isna()]
 
+    # ---- Фильтр по метро с логикой «скрывать без метро при сужении» ----
     metro_from = _num("metro_from", 0)
     metro_to = _num("metro_to", METRO_MAX_REAL)
     metro_filter_active = (metro_from > 0) or (metro_to < METRO_MAX_REAL)
@@ -136,6 +151,7 @@ def apply_filters(df_in, args):
 
 
 def make_options(df_in):
+    """Готовит списки доступных значений для фильтров."""
     return {
         "cities": sorted(df_in["city"].dropna().unique().tolist()) if "city" in df_in.columns else [],
         "sources": sorted(df_in["source"].dropna().unique().tolist()) if "source" in df_in.columns else [],
@@ -216,16 +232,26 @@ def map_view():
         center = [geo["lat"].mean(), geo["lon"].mean()]
         m = folium.Map(location=center, zoom_start=10, tiles="OpenStreetMap")
 
+        # Прокидываем текущие фильтры в ссылки внутри попапа
+        qs_for_popup = urlencode(
+            {k: v for k, v in request.args.to_dict(flat=False).items() if k != "page"},
+            doseq=True,
+        )
+
         for _, r in geo.iterrows():
             cls = str(r.get("complex_class", "")).lower()
             color = COLORS_BY_CLASS.get(cls, "purple")
+
+            detail_href = f"/detail/{r['id']}"
+            if qs_for_popup:
+                detail_href += f"?{qs_for_popup}"
 
             popup_html = (
                 f"<b>{r.get('zhk_name', '—')}</b><br>"
                 f"{fmt_price(r)}<br>"
                 f"{fmt_metro(r)}<br>"
                 f"{r.get('rooms', '—')} комн · {r.get('total_area', '—')} м²<br>"
-                f"<a href='/detail/{r['id']}' target='_top'>Открыть карточку →</a>"
+                f"<a href='{detail_href}' target='_top'>Открыть карточку →</a>"
             )
 
             folium.CircleMarker(
