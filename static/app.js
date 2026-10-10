@@ -1,3 +1,17 @@
+// ============ Поиск в мультиселектах (Choices.js) ============
+document.querySelectorAll("select.js-searchable").forEach(el => {
+    new Choices(el, {
+        removeItemButton: true,
+        searchEnabled: true,
+        searchPlaceholderValue: el.dataset.placeholder || "Поиск…",
+        noResultsText: "Ничего не найдено",
+        noChoicesText: "Нет вариантов",
+        itemSelectText: "",
+        shouldSort: false,
+        placeholder: true,
+        placeholderValue: el.dataset.placeholder || "",
+    });
+});
 // ============ Избранное ============
 async function toggleFavorite(id, btn) {
     try {
