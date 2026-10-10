@@ -237,7 +237,8 @@ def map_view():
                 popup=folium.Popup(popup_html, max_width=280),
             ).add_to(m)
 
-        map_html = m.get_root().render()
+        m.save("templates/_map_body.html")
+        map_html = None
 
     return render_template(
         "map.html",
