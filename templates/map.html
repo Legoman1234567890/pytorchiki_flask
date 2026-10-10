@@ -9,7 +9,9 @@
 <p class="hint">💡 Кликни по маркеру — всплывёт попап с информацией и ссылкой на карточку</p>
 
 <div class="map-wrap">
-    {{ map_html|safe }}
+    <iframe src="{{ url_for('static', filename='map.html') }}"
+            style="width:100%;height:650px;border:0;"
+            loading="lazy"></iframe>
 </div>
 
 {% endblock %}
