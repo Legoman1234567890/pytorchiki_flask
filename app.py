@@ -1,6 +1,4 @@
 import math
-from functools import lru_cache
-
 import folium
 import pandas as pd
 import numpy as np
@@ -8,7 +6,7 @@ import plotly.express as px
 import plotly.io as pio
 from flask import (
     Flask, render_template, request, redirect,
-    url_for, session, jsonify
+    url_for, session, jsonify, Response
 )
 
 from data_loader import load_data
@@ -42,6 +40,10 @@ COLORS_BY_CLASS = {
     "de luxe": "darkred",
     "не указан": "purple",
 }
+
+# ---------- Кэш HTML-содержимого карты ----------
+# Заполняется при заходе на /map, отдаётся через /map-frame.
+_map_cache = {"html": None}
 
 
 # ======================== ВСПОМОГАТЕЛЬНЫЕ ========================
@@ -111,7 +113,6 @@ def apply_filters(df_in, args):
     if "total_area" in f.columns and area_from > 0:
         f = f[(f["total_area"] >= area_from) | f["total_area"].isna()]
 
-    # ---- Фильтр по метро с логикой «скрывать без метро при сужении» ----
     metro_from = _num("metro_from", 0)
     metro_to = _num("metro_to", METRO_MAX_REAL)
     metro_filter_active = (metro_from > 0) or (metro_to < METRO_MAX_REAL)
@@ -135,7 +136,6 @@ def apply_filters(df_in, args):
 
 
 def make_options(df_in):
-    """Готовит списки доступных значений для фильтров."""
     return {
         "cities": sorted(df_in["city"].dropna().unique().tolist()) if "city" in df_in.columns else [],
         "sources": sorted(df_in["source"].dropna().unique().tolist()) if "source" in df_in.columns else [],
@@ -143,10 +143,6 @@ def make_options(df_in):
         "classes": sorted(df_in["complex_class"].dropna().unique().tolist()) if "complex_class" in df_in.columns else [],
         "rooms": sorted(df_in["rooms"].dropna().unique().tolist()) if "rooms" in df_in.columns else [],
     }
-
-
-def row_to_dict(row):
-    return {k: (None if pd.isna(v) else v) for k, v in row.to_dict().items()}
 
 
 # ======================== МАРШРУТЫ ========================
@@ -205,11 +201,17 @@ def index():
 
 @app.route("/map")
 def map_view():
+    """Строит карту, кладёт её HTML в кэш, отдаёт страницу с iframe."""
     f = apply_filters(df, request.args)
     geo = f.dropna(subset=["lat", "lon"]) if "lat" in f.columns else pd.DataFrame()
 
     if len(geo) == 0:
-        map_html = "<p style='padding:20px;'>Нет объектов с координатами под текущие фильтры</p>"
+        _map_cache["html"] = (
+            "<!DOCTYPE html><html><head><meta charset='utf-8'></head>"
+            "<body style='font-family:sans-serif;padding:20px;'>"
+            "Нет объектов с координатами под текущие фильтры"
+            "</body></html>"
+        )
     else:
         center = [geo["lat"].mean(), geo["lon"].mean()]
         m = folium.Map(location=center, zoom_start=10, tiles="OpenStreetMap")
@@ -223,7 +225,7 @@ def map_view():
                 f"{fmt_price(r)}<br>"
                 f"{fmt_metro(r)}<br>"
                 f"{r.get('rooms', '—')} комн · {r.get('total_area', '—')} м²<br>"
-                f"<a href='/detail/{r['id']}'>Открыть карточку →</a>"
+                f"<a href='/detail/{r['id']}' target='_top'>Открыть карточку →</a>"
             )
 
             folium.CircleMarker(
@@ -237,17 +239,30 @@ def map_view():
                 popup=folium.Popup(popup_html, max_width=280),
             ).add_to(m)
 
-        m.save("templates/_map_body.html")
-        map_html = None
+        _map_cache["html"] = m.get_root().render()
 
     return render_template(
         "map.html",
-        map_html=map_html,
         active_page="map",
         options=make_options(df),
         current_args=request.args,
         metro_max=METRO_MAX_REAL,
     )
+
+
+@app.route("/map-frame")
+def map_frame():
+    """Отдаёт HTML карты как отдельный документ для iframe."""
+    html = _map_cache.get("html")
+    if not html:
+        return Response(
+            "<!DOCTYPE html><html><head><meta charset='utf-8'></head>"
+            "<body style='font-family:sans-serif;padding:20px;'>"
+            "Карта ещё не сгенерирована. Открой /map."
+            "</body></html>",
+            mimetype="text/html",
+        )
+    return Response(html, mimetype="text/html")
 
 
 @app.route("/detail/<zhk_id>")
